@@ -3,27 +3,34 @@
 <head>
   <meta charset="UTF-8" />
   <title>RoomClipみんなの暮らしのマガジン 3月号</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- 簡易的なスタイル -->
   <style>
+    /* ベーシックリセット */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
       font-family: sans-serif;
-      margin: 0;
-      padding: 0;
+      background-color: #fff;
+      color: #333;
     }
+
     header {
       background-color: #f8f8f8;
       padding: 16px;
       text-align: center;
     }
-    h1 {
+    header h1 {
       margin: 0;
       font-size: 1.2rem;
     }
+
     .intro {
       padding: 8px 16px;
+      line-height: 1.4;
+      font-size: 0.95rem;
     }
+
     nav {
       padding: 8px 16px;
       background: #eee;
@@ -47,56 +54,63 @@
     section {
       padding: 16px;
     }
-    h2 {
-      margin-top: 0;
+    section h2 {
       margin-bottom: 8px;
       font-size: 1rem;
     }
 
-    /* 3カラムグリッド */
+    /* ★ 3カラム固定 (画面が狭くても常に3カラム) */
     .grid-container {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(3, 1fr); /* 常に3カラム */
       gap: 8px;
       margin-bottom: 24px;
+      align-items: start;  /* 各行の上揃えを明確に */
     }
+
+    /* 個々のアイテム (カード風だけど境界線は無し) */
     .grid-item {
-    - border: 1px solid #eee;
-      padding: 4px;
-    - background: #fafafa;
-    + background: none; /* またはtransparent */
-    + border: none;
+      border: none;
+      background: none;
+      padding: 0;
     }
+
+    /* 正方形画像(1:1想定)を幅100%で表示 */
     .grid-item img {
       width: 100%;
       height: auto;
       display: block;
     }
-    .grid-item .info {
+
+    /* 追加情報エリア */
+    .info {
       font-size: 0.8rem;
       color: #555;
+      margin-top: 4px; /* 画像とテキストの隙間を少し開ける */
     }
+
     footer {
       background: #f8f8f8;
       padding: 16px;
       text-align: center;
       font-size: 0.9rem;
+      margin-top: 16px;
     }
   </style>
 </head>
 <body>
+  <!-- ヘッダー -->
   <header>
     <h1>RoomClipみんなの暮らしのマガジン 3月号</h1>
   </header>
 
   <!-- イントロ -->
   <div class="intro">
-    <p>3月は春の訪れと新生活がテーマ</p>
-    <p>今月も299人のユーザーさんから、500枚の投稿を集めてみました！</p>
-    <p>ぜひ皆さんも投稿して、来月号に参加してみてください！</p>
+    <p>今月は春を感じる素敵なお部屋写真がたくさん集まりました。下記のテーマからお好きなジャンルをチェックしてみてください。</p>
+    <p>来月号にも投稿で参加して、みんなと交流しませんか？</p>
   </div>
 
-  <!-- ナビゲーション：テーマ一覧 (例)-->
+  <!-- ナビゲーション：テーマ一覧のリンク (例) -->
   <nav>
     <a href="#season">季節</a>
     <a href="#industrial">スタイル4(インダストリアル)</a>
@@ -114,16 +128,12 @@
   <!-- 各テーマのセクション -->
   <section id="season">
     <h2>季節</h2>
-    <div class="grid-container" id="season-container">
-      <!-- JSで挿入 -->
-    </div>
+    <div class="grid-container" id="season-container"></div>
   </section>
 
   <section id="industrial">
     <h2>スタイル4(インダストリアル)</h2>
-    <div class="grid-container" id="industrial-container">
-      <!-- JSで挿入 -->
-    </div>
+    <div class="grid-container" id="industrial-container"></div>
   </section>
 
   <section id="natural">
@@ -173,26 +183,27 @@
 
   <!-- フッター（巻末） -->
   <footer>
-    <p>今月もたくさんのご投稿ありがとうございました！また来月もお待ちしています。</p>
+    <p>今月もたくさんのご投稿ありがとうございました！<br>また来月もお待ちしています。</p>
   </footer>
 
-  <!-- JSスクリプト -->
+  <!-- スクリプト：data.json を読み込み、テーマごとに写真を表示 -->
   <script>
-    // (1) データを読み込む
-    //   - ここでは fetch を使って data.json を読み込む例
-    //   - ローカル環境で動かない場合は、python -m http.serverなど簡易サーバーを利用してください
+    // data.json には以下形式を想定
+    // [
+    //   {
+    //     "theme": "季節",
+    //     "photo_id": 101,
+    //     "taker_id": 999,
+    //     "Image": "https://example.com/xxx.jpg",
+    //     "score": 50
+    //   },
+    //   ...
+    // ]
 
     fetch("./data.json")
       .then(response => response.json())
       .then(data => {
-        // data は [{ theme: "季節", photo_id: 123, taker_id: 999, photo_url: "...", tag_names: "..." }, ...]
-        // という形を想定
-
-        // (2) テーマごとに分類して格納
-        // 簡易的方法：filter() または forEach() で振り分ける
-
-        // "季節", "スタイル4(インダストリアル)", ... と
-        // 各セクションIDに対応するマッピングを作っておく
+        // テーマ名に対応するセクションIDをマッピング
         const themeMap = {
           "季節": "season-container",
           "スタイル4(インダストリアル)": "industrial-container",
@@ -207,31 +218,24 @@
           "暮らしの一コマ": "lifestyle-container"
         };
 
-        // (3) 各投稿をDOMに追加
         data.forEach(item => {
-          const themeName = item.theme;  // 例: "季節" が入っている想定
+          const themeName = item.theme;
           const containerId = themeMap[themeName];
+          if (!containerId) return; // 該当テーマがない場合はスキップ
 
-          if (!containerId) {
-            // 該当テーマが無い場合はスキップ
-            return;
-          }
-
-          // コンテナ要素を取得
           const container = document.getElementById(containerId);
           if (!container) return;
 
           // grid-item要素を作成
           const div = document.createElement("div");
           div.className = "grid-item";
+
           div.innerHTML = `
             <img src="${item.Image}" alt="photo_${item.photo_id}">
             <div class="info">
               <p>User: ${item.taker_id}</p>
-            - <p>Tags: ${item.tag_names}</p>
             </div>
           `;
-
           container.appendChild(div);
         });
       })
