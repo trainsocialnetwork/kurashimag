@@ -61,9 +61,11 @@
       margin-bottom: 24px;
     }
     .grid-item {
-      border: 1px solid #eee;
+    - border: 1px solid #eee;
       padding: 4px;
-      background: #fafafa;
+    - background: #fafafa;
+    + background: none; /* またはtransparent */
+    + border: none;
     }
     .grid-item img {
       width: 100%;
@@ -225,6 +227,7 @@
             <img src="${item.Image}" alt="photo_${item.photo_id}">
             <div class="info">
               <p>User: ${item.taker_id}</p>
+            - <p>Tags: ${item.tag_names}</p>
             </div>
           `;
 
